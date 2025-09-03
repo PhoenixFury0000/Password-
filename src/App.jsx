@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Clipboard, Check, Sun, Moon } from "lucide-react";
-import Mascot from "./components/Mascot";
-import { PasswordStrength, calculateStrength } from "./components/PasswordStrength";
+import Mascot from "./components/Mascot.jsx";
+import { PasswordStrength, calculateStrength } from "./components/PasswordStrength.jsx";
 
 const generatePassword = ({ length, upper, lower, numbers, symbols }) => {
   const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -61,19 +61,21 @@ export default function App() {
       <div className="absolute top-4 right-4 cursor-pointer" onClick={() => setDarkMode(!darkMode)}>
         {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
       </div>
-      <h1 className="text-3xl font-bold mb-6">Next-Level Password Generator</h1>
 
-      <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-2xl shadow-lg w-full max-w-md transition-colors duration-500`}>
+      <h1 className="text-4xl font-bold mb-8 text-center">Next-Level Password Generator</h1>
+
+      <div className={`${darkMode ? "bg-gray-800" : "bg-white"} p-6 rounded-3xl shadow-2xl w-full max-w-lg transition-colors duration-500`}>
+        <Mascot strength={strength} />
+
         <div className="mb-4 relative">
-          <Mascot strength={strength} />
           <input
             type="text"
             value={password}
             readOnly
-            className="w-full p-2 border rounded font-mono text-center text-lg"
+            className="w-full p-3 border rounded-xl font-mono text-center text-lg focus:ring-2 focus:ring-blue-400 transition-all duration-300"
           />
           <button
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition"
             onClick={copyToClipboard}
           >
             {copied ? <Check className="w-5 h-5 text-green-500" /> : <Clipboard className="w-5 h-5" />}
@@ -82,25 +84,32 @@ export default function App() {
         </div>
 
         <div className="flex flex-col space-y-2 mb-4 text-sm">
-          <label><input type="checkbox" checked={upper} onChange={() => setUpper(!upper)} /> Include Uppercase</label>
-          <label><input type="checkbox" checked={lower} onChange={() => setLower(!lower)} /> Include Lowercase</label>
-          <label><input type="checkbox" checked={numbers} onChange={() => setNumbers(!numbers)} /> Include Numbers</label>
-          <label><input type="checkbox" checked={symbols} onChange={() => setSymbols(!symbols)} /> Include Symbols</label>
-          <label className="flex items-center">
-            Length:
-            <input type="number" min="8" max="32" value={length} onChange={(e) => setLength(Number(e.target.value))} className="w-16 border rounded p-1 ml-2"/>
+          <label className="flex items-center space-x-2"><input type="checkbox" checked={upper} onChange={() => setUpper(!upper)} /> Uppercase</label>
+          <label className="flex items-center space-x-2"><input type="checkbox" checked={lower} onChange={() => setLower(!lower)} /> Lowercase</label>
+          <label className="flex items-center space-x-2"><input type="checkbox" checked={numbers} onChange={() => setNumbers(!numbers)} /> Numbers</label>
+          <label className="flex items-center space-x-2"><input type="checkbox" checked={symbols} onChange={() => setSymbols(!symbols)} /> Symbols</label>
+
+          <label className="flex items-center justify-between">
+            Length: 
+            <input type="range" min="8" max="32" value={length} onChange={(e) => setLength(Number(e.target.value))} className="w-2/3"/>
+            <span>{length}</span>
           </label>
         </div>
 
-        <div className="flex space-x-2">
-          <button onClick={generate} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Generate</button>
+        <div className="flex justify-center">
+          <button
+            onClick={generate}
+            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300"
+          >
+            Generate
+          </button>
         </div>
 
         {history.length > 0 && (
-          <div className="mt-4">
-            <h2 className="font-semibold mb-2">History</h2>
-            <ul className="text-sm font-mono space-y-1 max-h-40 overflow-auto">
-              {history.map((h, i) => <li key={i}>{h}</li>)}
+          <div className="mt-6 max-h-48 overflow-auto">
+            <h2 className="font-semibold mb-2 text-center">History</h2>
+            <ul className="text-sm font-mono space-y-1">
+              {history.map((h, i) => <li key={i} className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded">{h}</li>)}
             </ul>
           </div>
         )}
